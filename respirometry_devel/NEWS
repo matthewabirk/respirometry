@@ -1,0 +1,14 @@
+-------------------------------------------------
+version 1.0.0, xxxx-xx-xx
+- co2_add():				new function
+- co2_rate():				new function
+- conv_o2():				new function
+- correct_bubble():	new function
+- flush():					new function
+- flush_carb():			new function
+- guess_TA():				new function
+- max_MO2():				new function
+- min_flow():				new function
+- peri_pump():			new function
+- predict_pH():			new function
+- Q10():						new function

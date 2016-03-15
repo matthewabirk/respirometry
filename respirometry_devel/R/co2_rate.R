@@ -16,7 +16,7 @@
 #' 
 #' @author Matthew A. Birk, \email{matthewabirk@@gmail.com}
 #' @references Jokiel PL, Bahr KD, Rodgers KS. 2014. Low-cost, high-flow mesocosm system for simulating ocean acidification with CO2 gas. Limnol Oceanogr Methods. 12:313–322.
-#' @seealso \code{\link{co2_add}}, \code{\link{flush_carb}}, \code{\link{seacarb::carb}}
+#' @seealso \code{\link{co2_add}}, \code{\link{flush_carb}}, \code{\link{seacarb::carb}}, \code{\link{peri_pump}}
 #' 
 #' @examples
 #' # I want the respirometer to have a pCO2 = 100 Pa. How much CO2 per minute do I need to add to the intake flow if the ambient pH is 8.1 and it is flowing at 3 LPM?

@@ -19,7 +19,7 @@
 #' 
 #' @examples
 #' correct_bubble(resp_vol = 50, bubble_vol = 10) # a 10 mL bubble makes a huge difference!
-#' correct_bubble(resp_vol = 50, bubble_vol = 1, temp = 10, sal = 0)
+#' correct_bubble(resp_vol = 50, bubble_vol = 1, temp = 10, sal = 0) # in calculating MO2, a volume of 63.8 L should be used rather than the true 50 L.
 #'
 #' @encoding UTF-8
 #' @export

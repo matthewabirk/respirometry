@@ -16,7 +16,7 @@
 #' 
 #' @author Matthew A. Birk, \email{matthewabirk@@gmail.com}
 #' @note It is assummed that the entire reservoir is drained into the respirometer during the flush.
-#' @seealso \code{\link{co2_rate}}, \code{\link{flush_carb}}, \code{\link{seacarb::carb}}
+#' @seealso \code{\link{co2_rate}}, \code{\link{flush_carb}}, \code{\link{seacarb::carb}}, \code{\link{peri_pump}}
 #' 
 #' @examples
 #' # I want the respirometer to have a pCO2 = 100 Pa. It currently has a pH of 7.6 and is 90 L. If I have a 200 L reservoir with pH = 7.9 seawater, how much CO2 do I need to add to the flush reservoir?

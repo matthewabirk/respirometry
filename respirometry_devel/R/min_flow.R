@@ -1,4 +1,4 @@
-#' @title Minimum flow rate
+#' @title Minimum flow rate to support MO2
 #' 
 #' @description Calculates the minimum flow rate into a respirometer required to maintain a high pO2. Useful for ensuring an acclimating animal maintains a normoxic environment. It can also be used to estimate the flow rate needed for a given pO2 decrease desired for flow-through respirometry.
 #' 
@@ -12,8 +12,9 @@
 #' @return The flow rate (liters / min) into the respirometer required for the steady state pO2 to be \code{min_pO2}.
 #' 
 #' @author Matthew A. Birk, \email{matthewabirk@@gmail.com}
+#' @note Keep in mind that most organisms are very stressed upon being placed in a respirometer and their MO2 may be much higher than basal MO2.
 #' @references Steffensen JF. 1989. Some errors in respirometry of aquatic breathers: How to avoid and correct for them. Fish Physiol Biochem. 6:49–59. Equation 8.
-#' @seealso \code{\link{flush}}
+#' @seealso \code{\link{max_MO2}}, \code{\link{flush}}
 #' 
 #' @examples
 #' min_flow(MO2 = 1000)
