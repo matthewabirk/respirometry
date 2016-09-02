@@ -1,6 +1,4 @@
 -------------------------------------------------
-version x.y.z, yyyy-mm-dd
--------------------------------------------------
 version 0.1.2, 2016-09-02
 - guess_TA():			now allows calculations if salinity is <= 5 psu outside the bounds, but with a warning.
 - guess_TA():			fixed a bug where an error occurred if any NAs were provided
