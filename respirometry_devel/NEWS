@@ -1,5 +1,15 @@
--------------------------------------------------
 version x.y.z, yyyy-mm-dd
+-------------------------------------------------
+version 0.2.0, 2016-10-07
+- closed():					new function: Closed respirometry
+- import_presens():	new function: Import data from a PreSens O2 transmitter
+- import_witrox():	new function: Import data from a Loligo Systems Witrox transmitter
+- scale_MO2():			new function: Scale metabolic rate by size
+- conv_o2():				added support for mmol_per_l and mmol_per_kg
+- flush_o2():				added support for calculating any parameter from the others, not just calculating final O2.
+- mean_pH():				returns an NA rather than error when pH = NULL
+- co2_*.R():				improved documentation
+- flush_water():		improved documentation
 -------------------------------------------------
 version 0.1.2, 2016-09-02
 - guess_TA():			now allows calculations if salinity is <= 5 psu outside the bounds, but with a warning.

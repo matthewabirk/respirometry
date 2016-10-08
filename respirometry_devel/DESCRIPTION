@@ -13,6 +13,7 @@ Description: Provides tools to enable the researcher to more precisely conduct
     package provides tools for intermittent, flow-through, and closed respirometry
     techniques.
 Imports:
+    birk,
     graphics,
     lubridate,
     marelac,
