@@ -1,14 +1,29 @@
 version x.y.z, yyyy-mm-dd
 -------------------------------------------------
+version 0.3.0, 2016-11-29
+- calc_b():			new function: Calculate the metabolic scaling coefficient, b
+- calc_MO2():			new function: Calculate metabolic rate
+- conv_resp_unit():		new function: Convert units related to respirometry
+- import_firesting():		new function: Import data from a FireSting O2 transmitter
+- conv_o2():			added support for ug_per_l and ug_per_kg
+- flush_o2():			now returns just the missing value(s) rather than the missing value(s) within a list
+- flush_water():		now returns just the missing value(s) rather than the missing value(s) within a list
+- flush_water():		now gives a meaningful error message when parameters have a length >1 and plot = TRUE
+- Q10():			now returns just the missing value(s) rather than the missing value(s) within a list
+- scale_MO2():			now returns just the missing value(s) rather than the missing value(s) within a list
+- import_presens():		improved efficiency
+- import_witrox():		improved efficiency
+- predict_pH():			improved efficiency
+-------------------------------------------------
 version 0.2.0, 2016-10-07
-- closed():					new function: Closed respirometry
-- import_presens():	new function: Import data from a PreSens O2 transmitter
-- import_witrox():	new function: Import data from a Loligo Systems Witrox transmitter
+- closed():			new function: Closed respirometry
+- import_presens():		new function: Import data from a PreSens O2 transmitter
+- import_witrox():		new function: Import data from a Loligo Systems Witrox transmitter
 - scale_MO2():			new function: Scale metabolic rate by size
-- conv_o2():				added support for mmol_per_l and mmol_per_kg
-- flush_o2():				added support for calculating any parameter from the others, not just calculating final O2.
-- mean_pH():				returns an NA rather than error when pH = NULL
-- co2_*.R():				improved documentation
+- conv_o2():			added support for mmol_per_l and mmol_per_kg
+- flush_o2():			added support for calculating any parameter from the others, not just calculating final O2.
+- mean_pH():			returns an NA rather than error when pH = NULL
+- co2_*.R():			improved documentation
 - flush_water():		improved documentation
 -------------------------------------------------
 version 0.1.2, 2016-09-02
@@ -38,5 +53,5 @@ version 0.1.0, 2016-08-22
 - peri_pump():			new function
 - predict_NH4():		new function
 - predict_pH():			new function
-- Q10():				new function
-- RQ():					new function
+- Q10():			new function
+- RQ():				new function

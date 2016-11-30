@@ -17,10 +17,11 @@ Imports:
     graphics,
     lubridate,
     marelac,
-    measurements,
+    measurements (>= 1.1.0),
     methods,
-    seacarb,
-    stats
+    seacarb (>= 3.1),
+    stats,
+    utils
 License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
