@@ -3,6 +3,8 @@ library(respirometry)
 library(measurements)
 library(ggplot2)
 
+comma_num_vec = function(x) as.numeric(unlist(strsplit(x, '\\s*,\\s*')))
+
 function(input, output){
 
 # conv_o2 -----------------------------------------------------------------
@@ -36,6 +38,32 @@ function(input, output){
 	output$correct_bubble.orig_vol = renderText(input$bubble.resp_vol)
 	output$correct_bubble.vol_equiv = renderText(round(cb() - input$bubble.resp_vol, 2))
 	output$correct_bubble.final_vol = renderText(cb())
+	
+	
+	
+	
+	# Respirometer size -------------------------------------------------------
+	
+	size = reactive({
+		known_mo2 = input$size.mo2
+		temps = known_temp = input$size.temp
+		sals = known_sal = input$size.sal
+		masses = known_mass = input$size.mass
+		
+		if('Temperature' %in% input$size_treatments) temps = comma_num_vec(input$size.temp_treats)
+		if('Salinity' %in% input$size_treatments) sals = comma_num_vec(input$size.sal_treats)
+		if('Animal mass' %in% input$size_treatments) masses = comma_num_vec(input$size.mass_treats)
+		
+		options = expand.grid(list(temp = temps, sal = sals, mass = masses))
+		options$MO2 = Q10(Q10 = input$size.Q10, R1 = scale_MO2(mass_1 = known_mass, MO2_1 = known_mo2, mass_2 = options$mass, b = input$size.b), T1 = known_temp, T2 = options$temp)
+		options$resp_size = closed(MO2 = options$MO2, delta_pO2 = 20, duration = 60, temp = options$temp, sal = options$sal)
+		options
+		
+	})
+	
+	output$size = renderTable(size())
+	
+	
 	
 	
 # Flush parameters --------------------------------------------------------	

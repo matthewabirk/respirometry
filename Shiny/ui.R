@@ -6,7 +6,11 @@ HTML(paste0('<hr/><h4 align="center">', ..., '</h4><hr/>'))
 
 fluidPage(
 	titlePanel(title = paste('respirometry:', packageDescription(pkg = 'respirometry', fields = 'Title')), windowTitle = paste('respirometry: version', packageVersion(pkg = 'respirometry'))),
-	navbarPage('',
+	
+navbarPage('',
+
+
+# Introduction ------------------------------------------------------------
 
 tabPanel('Introduction',
 	
@@ -19,10 +23,11 @@ tabPanel('Introduction',
 	img(height = 140, width = 160, src = 'Rlogo.png')
 ),
 
-tabPanel('General',
 
-# conv_o2 -----------------------------------------------------------------
+# General -----------------------------------------------------------------
 
+navbarMenu('General',
+	tabPanel('Convert O2 units',
 	h1('Convert between O', tags$sub(2), 'units of partial pressure and concentration'),
 	sidebarLayout(
 		sidebarPanel(
@@ -37,10 +42,22 @@ tabPanel('General',
 		), mainPanel(
 			tableOutput('conv_o2')
 	)),
-	hr(),
+	hr()
+	),
 
-# Q10 ---------------------------------------------------------------------
+tabPanel('Convert ammonium units',
+h1('Convert between units of ammonium'),
+sidebarLayout(
+	sidebarPanel(
+		numericInput('conv_NH4.n_waste', label = 'Nitrogen value', value = 1),
+		selectInput('conv_NH4.from', label = 'Measurement unit', choices = nh4_options)
+	), mainPanel(
+		tableOutput('conv_NH4')
+	)),
+	hr()
+),
 
+tabPanel('Q10',
 	h1('Calculate the Q', tags$sub(10), 'temperature coefficient'),
 	sidebarLayout(
 		sidebarPanel(
@@ -53,10 +70,10 @@ tabPanel('General',
 			
 		)
 	),
-	hr(),
+	hr()
+),
 
-# correct_bubble ----------------------------------------------------------
-
+tabPanel('Adjust volume for bubble(s)',
 	h1('Adjust calculated respirometer volume due to bubble(s)'),
 	p('Caution: allowing air bubbles into a respirometer is not recommended, even with this post-measurement adjustment. A small error in bubble volume estimation can lead to a large error in calculated metabolic rate.'),
 	sidebarLayout(
@@ -70,12 +87,47 @@ tabPanel('General',
 			p('Original volume:', textOutput('correct_bubble.orig_vol', inline = TRUE), 'L', br(), 'Bubble volume equivalent:', textOutput('correct_bubble.vol_equiv', inline = TRUE), 'L', br(), 'Adjusted respirometer volume:', textOutput('correct_bubble.final_vol', inline = TRUE), 'L')
 		)
 	)
+)),
+
+
+# Design ------------------------------------------------------------------
+
+navbarMenu('Design',
+
+tabPanel('Respirometer size',
+h1('Choosing a respirometer size'),
+h4_lined('Known MO2'),
+	flowLayout(
+		numericInput('size.mo2', label = 'Whole-animal MO2', value = 0),
+		h5('Unit'),
+		selectInput('size.mo2.o2_unit', label = NULL, choices = conc_options, selected = 'umol_O2', width = '50%'),
+		'/',
+		selectInput('size.mo2.dur', label = NULL, choices = dur_options, selected = 'hr', width = '50%')
+	),
+	numericInput('size.mass', label = 'Mass (g)', value = 0),
+	numericInput('size.temp', label = HTML('Temperature (&deg;C)'), value = 25),
+	numericInput('size.sal', label = 'Salinity (psu)', value = 35),
+
+h4_lined('Treatments'),
+	checkboxGroupInput('size_treatments', label = 'Parameters varied in treatments', choices = list('Temperature', 'Salinity', 'Animal mass')),
+	conditionalPanel(condition = 'input.size_treatments.includes("Temperature")',
+		wellPanel(
+		textInput('size.temp_treats', label = HTML('Temperature treatments (&deg;C)')),
+		numericInput('size.Q10', label = 'Q10', value = 2, step = 0.1)
+	)),
+	conditionalPanel(condition = 'input.size_treatments.includes("Salinity")',
+		wellPanel(
+		textInput('size.sal_treats', label = 'Salinity treatments (psu)')
+	)),
+	conditionalPanel(condition = 'input.size_treatments.includes("Animal mass")',
+		wellPanel(
+		textInput('size.mass_treats', label = 'Animal sizes (g)'),
+		numericInput('size.b', label = 'b (scaling coefficient)', value = 0.75, step = 0.01)
+	)),
+tableOutput('size')
 ),
 
-tabPanel('Flushing and flow',
-
-
-# Flush -------------------------------------------------------------------
+tabPanel('Flushes',
 
 	h1('Flushing the respirometer'),
 	sidebarLayout(
@@ -122,22 +174,22 @@ tabPanel('Flushing and flow',
 			h4_lined('pH')
 		)
 	)
-),
+)),
 
-tabPanel('Ammonium',
 
-# conv_NH4 -----------------------------------------------------------------
+# Operation ---------------------------------------------------------------
 
-	h1('Convert between units of ammonium'),
-	sidebarLayout(
-		sidebarPanel(
-			numericInput('conv_NH4.n_waste', label = 'Nitrogen value', value = 1),
-			selectInput('conv_NH4.from', label = 'Measurement unit', choices = nh4_options)
-		), mainPanel(
-			tableOutput('conv_NH4')
-		)
-	)
-),
+navbarMenu('Operation',
+tabPanel('Operation'
 
-tabPanel('Simulating OA')
+)),
+
+
+
+# Analysis ----------------------------------------------------------------
+
+navbarMenu('Analysis',
+tabPanel('Analysis'
+
+))
 ))
