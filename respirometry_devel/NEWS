@@ -1,6 +1,16 @@
 -------------------------------------------------
 version x.y.z, yyyy-mm-dd
-
+-------------------------------------------------
+version 0.4.0, 2017-05-27
+- calc_MO2():			parameter added: "pH" which allows pH data to be summarized along with oxygen and duration data for each bin
+- calc_MO2():			parameter added: "time" to include time mean and range in output
+- Q10():			added new functionality allowing a vector of rate and temperature values to be input to return the best fitting Q10 value
+- calc_MO2():     		columns MEAN_DURATION, MEAN_O2, and MEAN_PH were renamed to DUR_MEAN, O2_MEAN, and PH_MEAN, respectively
+- calc_MO2():     		the DUR_RANGE column in the returned data frame is no longer rounded
+- calc_MO2():     		"bad" data identified by the parameter "good_data" now split their bin so that linear regressions are not fit through data that contain bad observations in the middle
+- conv_o2():			added support for "volumes_percent"
+- conv_nh4():			conv_NH4() was renamed and includes support for "mg_NH3" and "umol_NH3"
+- predict_nh3():	predict_NH4() was renamed and now returns a list of NH3, NH4, and TAN
 -------------------------------------------------
 version 0.3.1, 2016-12-31
 - calc_MO2():			parameter added: "good_data" which allows identified O2 observations to be excluded from analyses

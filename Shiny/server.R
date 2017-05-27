@@ -56,7 +56,7 @@ function(input, output){
 		
 		options = expand.grid(list(temp = temps, sal = sals, mass = masses))
 		options$MO2 = Q10(Q10 = input$size.Q10, R1 = scale_MO2(mass_1 = known_mass, MO2_1 = known_mo2, mass_2 = options$mass, b = input$size.b), T1 = known_temp, T2 = options$temp)
-		options$resp_size = closed(MO2 = options$MO2, delta_pO2 = 20, duration = 60, temp = options$temp, sal = options$sal)
+		options$resp_size = closed(MO2 = options$MO2, delta_pO2 = 20, duration = 20, temp = options$temp, sal = options$sal)
 		options
 		
 	})
