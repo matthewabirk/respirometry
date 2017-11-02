@@ -1,6 +1,4 @@
 -------------------------------------------------
-version x.y.z, yyyy-mm-dd
--------------------------------------------------
 version 0.5.0, 2017-11-01
 - import_firesting():	now supports "Firesting Logger" software and 1st generation FireStingO2 meter
 - Q10():			option added to return an nls object with the model fit if vectors are provided
