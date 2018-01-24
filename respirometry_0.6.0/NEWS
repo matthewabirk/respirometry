@@ -1,6 +1,4 @@
 -------------------------------------------------
-version x.y.z, yyyy-mm-dd
--------------------------------------------------
 version 0.6.0, 2018-01-23
 - import_presens():		added support for PreSens SDR SensorDish Reader txt files
 - calc_MO2():			added support to enter a data frame as an argument for the "bin width" parameter
