@@ -1,5 +1,15 @@
 -------------------------------------------------
 version x.y.z, yyyy-mm-dd
+- calc_pcrit():			new function:
+- plot_pcrit():			new function:
+-------------------------------------------------
+version 0.7.0, 2018-08-12
+- make_bins():			new function: Make time bins for MO2 calculations.
+- calc_b():			improved the ability to converge on the b value.
+- calc_MO2():			fixed an issue where an error was returned if the bin_width dataframe had a 0 value.
+- calc_b():			fixed an issue where the returned value was incorrect.
+- import_firesting():		fixed an issue with the example.
+- guess_TA():			fixed an issue where an error message would improperly say salinity was outside of bounds when temperature was outside of bounds.
 -------------------------------------------------
 version 0.6.0, 2018-01-23
 - import_presens():		added support for PreSens SDR SensorDish Reader txt files
@@ -7,7 +17,7 @@ version 0.6.0, 2018-01-23
 - calc_MO2():			fixed an issue where an error would be returned if an entire bin was full of O2 = NA
 -------------------------------------------------
 version 0.5.0, 2017-11-01
-- import_firesting():	now supports "Firesting Logger" software and 1st generation FireStingO2 meter
+- import_firesting():		now supports "Firesting Logger" software and 1st generation FireStingO2 meter
 - Q10():			option added to return an nls object with the model fit if vectors are provided
 - Q10():			fixed a bug where the returned value was 1 when the first two elements of T_vec were identical
 -------------------------------------------------
@@ -20,7 +30,7 @@ version 0.4.0, 2017-05-27
 - calc_MO2():     		"bad" data identified by the parameter "good_data" now split their bin so that linear regressions are not fit through data that contain bad observations in the middle
 - conv_o2():			added support for "volumes_percent"
 - conv_nh4():			conv_NH4() was renamed and includes support for "mg_NH3" and "umol_NH3"
-- predict_nh3():	predict_NH4() was renamed and now returns a list of NH3, NH4, and TAN
+- predict_nh3():		predict_NH4() was renamed and now returns a list of NH3, NH4, and TAN
 -------------------------------------------------
 version 0.3.1, 2016-12-31
 - calc_MO2():			parameter added: "good_data" which allows identified O2 observations to be excluded from analyses
