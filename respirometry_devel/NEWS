@@ -1,7 +1,10 @@
 -------------------------------------------------
 version x.y.z, yyyy-mm-dd
-- calc_pcrit():			new function:
-- plot_pcrit():			new function:
+-------------------------------------------------
+version 1.0.0, 2019-05-24
+- calc_pcrit():			new function: Calculate Pcrit (hypoxia tolerance)
+- plot_pcrit():			new function: Plot Pcrit (hypoxia tolerance)
+- calc_b():			output changed from a numeric value for b to a list of 1. the b value and 2. a vector of b0 values
 -------------------------------------------------
 version 0.7.0, 2018-08-12
 - make_bins():			new function: Make time bins for MO2 calculations.
