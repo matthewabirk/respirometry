@@ -1,8 +1,8 @@
 Package: respirometry
 Type: Package
 Title: Tools for Conducting and Analyzing Respirometry Experiments
-Version: x.y.z
-Date: yyyy-mm-dd
+Version: 1.0.2
+Date: 2020-01-24
 Author: Matthew A. Birk
 Maintainer: Matthew A. Birk <matthewabirk@gmail.com>
 Description: Provides tools to enable the researcher to more precisely conduct
@@ -11,21 +11,13 @@ Description: Provides tools to enable the researcher to more precisely conduct
     analysis of resulting respirometry data are also provided. This package
     provides tools for intermittent, flow-through, and closed respirometry
     techniques.
-Imports:
-    birk,
-    graphics,
-    lubridate,
-    marelac,
-    measurements (>= 1.1.0),
-    methods,
-    minpack.lm,
-    seacarb (>= 3.1),
-    segmented,
-    stats,
-    utils
-Depends:
-    PKNCA
+Imports: birk, graphics, lubridate, marelac, measurements (>= 1.1.0),
+        methods, minpack.lm, seacarb (>= 3.1), segmented, stats, utils
+Depends: PKNCA
 License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
 RoxygenNote: 7.0.2
+NeedsCompilation: no
+Packaged: 2020-01-24 14:18:30 UTC; matthewbirk
+Built: R 3.6.2; ; 2020-01-24 14:18:35 UTC; unix

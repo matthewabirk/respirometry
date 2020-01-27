@@ -1,6 +1,4 @@
 -------------------------------------------------
-version x.y.z, yyyy-mm-dd
--------------------------------------------------
 version 1.0.2, 2020-01-24
 - import_presens():		fixes an error when Fibox 4 files were exported with PreSens Datamanager
 -------------------------------------------------
