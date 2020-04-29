@@ -1,0 +1,39 @@
+Q10                     Parameters of Q10 Temperature Coefficient
+RQ                      Calculate respiratory quotient
+calc_MO2                Calculate metabolic rate
+calc_b                  Calculate the metabolic scaling coefficient, b
+calc_pcrit              Calculate Pcrit (hypoxia tolerance)
+closed                  Closed respirometry
+co2_add                 Calculate CO2 to add to water
+co2_flush               Calculate CO2 to add to flush reservoir
+co2_rate                Calculate CO2 to add to a respirometer intake
+                        flow
+conv_nh4                Convert between units of ammonia (NH3) /
+                        ammonium (NH4+)
+conv_o2                 Convert between units of oxygen partial
+                        pressure and concentration
+conv_resp_unit          Convert units related to respirometry
+correct_bubble          Adjust respirometer volume for bubbles
+flush_carb              Estimate carbonate chemistry after a flush
+flush_o2                Estimate dissolved O2 after a flush
+flush_water             Find percent of water exchanged after a flush
+goal_flush_pH           Calculate goal pH of a flush reservoir to
+                        achieve the post-flush goal pCO2
+guess_TA                Estimate total alkalinity from salinity
+guess_when              Estimate when the O2 level will reach a defined
+                        level
+import_firesting        Import data from a FireSting O2 transmitter
+import_presens          Import data from a PreSens O2 transmitter
+import_witrox           Import data from a Loligo Systems Witrox O2
+                        transmitter
+make_bins               Make time bins for MO2 calculations
+max_MO2                 Maximum MO2 supported by flow rate
+mean_pH                 Mean pH by [H+]
+min_flow                Minimum flow rate to support MO2
+peri_pump               Calculate peristaltic pump gaseous flow rate
+plot_pcrit              Plot Pcrit (hypoxia tolerance)
+predict_nh3             Predict NH3 / NH4+ concentration
+                        post-respiration
+predict_pH              Predict pH post-respiration
+respirometry            Tools for Conducting Respirometry Experiments
+scale_MO2               Mass-correct metabolic rate
