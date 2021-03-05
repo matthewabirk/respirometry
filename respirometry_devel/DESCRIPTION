@@ -1,8 +1,8 @@
 Package: respirometry
 Type: Package
 Title: Tools for Conducting and Analyzing Respirometry Experiments
-Version: 1.2.0
-Date: 2020-08-14
+Version: x.y.z
+Date: yyyy-mm-dd
 Author: Matthew A. Birk
 Maintainer: Matthew A. Birk <matthewabirk@gmail.com>
 Description: Provides tools to enable the researcher to more precisely conduct
