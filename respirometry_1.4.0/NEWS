@@ -1,6 +1,4 @@
 -------------------------------------------------
-version x.y.z, yyyy-mm-dd
--------------------------------------------------
 version 1.4.0, 2023-07-06
 - adj_by_temp():		new function: Predict biological parameters at a new temperature.
 - Q10():				fixed an error in one of the examples
