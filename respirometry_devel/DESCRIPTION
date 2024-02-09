@@ -1,8 +1,8 @@
 Package: respirometry
 Type: Package
 Title: Tools for Conducting and Analyzing Respirometry Experiments
-Version: x.y.z
-Date: yyyy-mm-dd
+Version: 1.4.0.9000
+Date: 2024-01-22
 Author: Matthew A. Birk
 Maintainer: Matthew A. Birk <matthewabirk@gmail.com>
 Description: Provides tools to enable the researcher to more precisely conduct
@@ -23,8 +23,6 @@ Imports:
     segmented (>= 1.0-0),
     stats,
     utils
-Depends:
-    PKNCA
 License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
