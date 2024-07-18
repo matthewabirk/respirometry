@@ -34,3 +34,8 @@ max_MO2 = function(flow_rate, min_pO2 = 90, pO2_in = 100, temp = 25, sal = 35, a
 	cO2_in = (pO2_in / 100) * o2_conc
 	return(flow_rate * (cO2_in - o2_conc * (min_pO2 / 100)) * 60)
 }
+
+
+#' @rdname max_MO2
+#' @export
+max_mo2 = max_MO2

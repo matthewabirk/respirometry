@@ -1,6 +1,6 @@
 #' @title Closed respirometry
 #' 
-#' @description Returns the unknown parameter given 3 of 4 parameters to calculate respiration rate in a closed respirometer. This is useful both for basic closed respirometry setups, and also for the closed measurement phase of intermittent respirometry.
+#' @description Returns the unknown parameter given 3 of 4 parameters to calculate respiration rate in a closed respirometer. This is useful both for basic closed respirometry setups, and also for the closed measurement phase of intermittent respirometry. Note that this is mainly useful for designing respirometry experiments. If you already have a timeseries dataset of oxygen measurements you want to analyze, use \code{\link{calc_MO2}} instead.
 #' 
 #' @param MO2 whole-animal oxygen consumption rate (umol O2 / hour).
 #' @param delta_pO2 desired change in pO2 (\% air saturation).

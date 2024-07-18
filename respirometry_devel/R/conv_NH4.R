@@ -3,7 +3,7 @@
 #' @description Ammonia or nitrogen excretion can be measured in a variety of ways. Convert between different measurements.
 #'
 #' @details
-#' The sum of NH4+ and NH3 species are considered. Conversions are based on relationships and values from the package \code{\link[marelac]{marelac}}.
+#' The sum of NH4+ and NH3 species are considered (i.e. TAN). Conversions are based on relationships and values from the package \code{\link[marelac]{marelac}}.
 #'
 #' @param n_waste a numeric vector of the ammonia or nitrogen value(s).
 #' @param from a string describing the unit used to measure \code{n_waste}. Default is "umol_NH4" Options are:\itemize{

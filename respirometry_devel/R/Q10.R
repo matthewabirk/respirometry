@@ -84,3 +84,11 @@ Q10 = function(Q10, R1, R2, T1, T2, R_vec, T_vec, model = FALSE){
 		}
 	}
 }
+
+#' @rdname Q10
+#' @export
+q10 = Q10
+
+#' @rdname Q10
+#' @export
+calc_q10 = Q10

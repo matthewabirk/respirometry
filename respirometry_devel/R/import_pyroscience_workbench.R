@@ -2,7 +2,7 @@
 #'
 #' Imports the raw channel data from Pyroscience Workbench output files. This allows "live" analyses while the trial is still running. This does not utilize the ".pyr" file, nor the text file that is created once the trial is finished. This utilizes the raw channel data found within the "ChannelData" folder that the software makes when the trial starts.
 #'
-#' @param folder a character string. The filepath to the parent folder which contains ChannelData.
+#' @param folder a character string. The filepath to the parent folder (directory) which contains ChannelData.
 #' @param o2_unit a character string. The unit of O2 measurement to be output in the data frame. Options are described in \code{\link{conv_o2}}.
 #' @param sal numeric. If \code{o2_unit} is a concentration rather than partial pressure, the salinity of the chamber in which measurements were made must be entered here.
 #' @param keep_metadata logical. Should metadata from the file be returned as extra columns in the returned data frame? Default is \code{FALSE}.
@@ -69,12 +69,12 @@ import_pyroscience_workbench = function(folder, o2_unit = 'percent_a.s.', sal = 
 		'Torr' = 'mmHg'	
 	)
 	
+	if(!dir.exists(folder)) stop('the folder (directory) does not exist.')
+	if(!any(grepl('ChannelData', list.files(folder)))) stop('make sure the "folder" argument contains the path to the parent folder (directory) that contains the "ChannelData" folder (directory).')
+	
 	o2_channels = list.files(paste0(folder, '/ChannelData/'), pattern = 'Oxygen', full.names = TRUE)
 	temp_channel = list.files(paste0(folder, '/ChannelData/'), pattern = 'TempPT100Port', full.names = TRUE)
 	
-	# temp = utils::read.table(temp_channel, sep = '\t')
-	# colnames(temp) = c('date', 'time', 'DURATION', 'TEMP', 'STATUS')
-	# temp = temp[-1, ]
 	
 	if(length(o2_unit) == 1 & length(o2_channels) > 1) o2_unit = rep(o2_unit, times = length(o2_channels))
 	if(length(sal) == 1 & length(o2_channels) > 1) sal = rep(sal, times = length(o2_channels))

@@ -1,4 +1,5 @@
-pcrit_internal = function(po2, mo2, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_m = 0.065, MR = NULL, mo2_threshold = Inf){
+pcrit_internal = function(po2, mo2, method, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_m = 0.065, MR = NULL, mo2_threshold = Inf){
+	
 	df = data.frame(po2 = po2, mo2 = mo2)
 	
 	# BREAKPOINT METHOD
@@ -78,7 +79,7 @@ pcrit_internal = function(po2, mo2, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_
 	
 	mods = list(MM_mod, powr_mod, hyperbola_mod, pareto_mod, weibull_mod)
 	mod_names = c('MM_mod' = 'Michaelis-Menten', 'powr_mod' = 'Power', 'hyperbola_mod' = 'Hyperbola', 'pareto_mod' = 'Pareto', 'weibull_mod' = 'Weibull with intercept')
-	aic_vec = sapply(mods, FUN = AIC)
+	aic_vec = sapply(mods, FUN = function(i) if(!any(is.na(i))) AIC(i) else NA)
 	best_mod = mod_names[which.min(aic_vec)]
 
 	
@@ -94,7 +95,8 @@ pcrit_internal = function(po2, mo2, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_
 	if(is.null(MR)){
 		LLO_pcrit = NA
 		df_LLO = NULL
-		message('"MR" must be defined for LLO calculation.')
+		if(method == 'LLO') stop('"MR" must be defined for LLO calculation.')
+		if(method == 'All') message('"MR" must be defined for LLO calculation.')
 	}else{
 		df_ordered = df[order(po2, decreasing = TRUE), ]
 		df_LLO = df_ordered[(utils::tail(which(df_ordered$mo2 >= MR), 1) + 1):nrow(df_ordered), ]
@@ -152,15 +154,17 @@ pcrit_internal = function(po2, mo2, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_
 #' 
 #' @param po2 a vector of PO2 values. Any unit of measurement should work, but the NLR calculation was optimized using kPa. If the NLR metric is giving you trouble, try converting to kPa using \code{\link{conv_o2}}.
 #' @param mo2 a vector of metabolic rate values. Must be the same length and corresponding to \code{po2}.
-#' @param avg_top_n applies to the \code{alpha} metric only. A numeric value representing the number of top \eqn{\alpha0} (MO2/PO2) values to average together to estimate \eqn{\alpha}. Default is 1. We recommend no more than 3 to avoid diminishing the \eqn{\alpha} value with sub-maximal observations.
-#' @param level applies to the \code{Sub_PI} metric only. Percentage at which the prediction interval should be constructed. Default is 0.95.
-#' @param iqr applies to the \code{Sub_PI} metric only. Removes \code{mo2} observations that are this many interquartile ranges away from the mean value for the oxyregulating portion of the trial. If this filtering is not desired, set to infinity. To visualize which observations will be removed by this parameter, use \code{\link{plot_pcrit}}. Default is 1.5.
-#' @param NLR_m applies to the \code{NLR} metric only. Pcrit is defined as the PO2 at which the slope of the best fitting function equals \code{NLR_m} (after the MO2 data are normalized to the 90\% quantile). Default is 0.065.
-#' @param MR applies to the \code{alpha} and \code{LLO} metrics only. A numeric value for the metabolic rate at which \code{pcrit_alpha} and \code{pcrit_LLO} should be returned. If not supplied by the user, then the mean MO2 of the "oxyregulating" portion of the curve is applied for \code{pcrit_alpha} and \code{NA} is returned for \code{pcrit_LLO}.
-#' @param mo2_threshold applies to the \code{alpha} metric only. A single numeric value above which \code{mo2} values are ignored for \code{alpha} Pcrit estimation. Useful to removing obviously erroneous values. Default is \code{Inf}.
+#' @param mo2_data for convenience, the output of \code{\link{calc_MO2}} can be entered here, as an alternative to specifying the \code{po2} and \code{mo2} parameters (optional).
+#' @param method Over the years, many different methods of analysis have been proposed to quantify Pcrit. You must choose one of the following: Alpha, Breakpoint (default), LLO, NLR, Sub_PI, All. If in doubt, try "All".
+#' @param avg_top_n applies to the \code{alpha} metric only (only when \code{method == "Alpha"} or \code{"All"}). A numeric value representing the number of top \eqn{\alpha0} (MO2/PO2) values to average together to estimate \eqn{\alpha}. Default is 1. We recommend no more than 3 to avoid diminishing the \eqn{\alpha} value with sub-maximal observations.
+#' @param level applies to the \code{Sub_PI} metric only (only when \code{method == "Sub_PI"} or \code{"All"}). Percentage at which the prediction interval should be constructed. Default is 0.95.
+#' @param iqr applies to the \code{Sub_PI} metric only (only when \code{method == "Sub_PI"} or \code{"All"}). Removes \code{mo2} observations that are this many interquartile ranges away from the mean value for the oxyregulating portion of the trial. If this filtering is not desired, set to infinity. To visualize which observations will be removed by this parameter, use \code{\link{plot_pcrit}}. Default is 1.5.
+#' @param NLR_m applies to the \code{NLR} metric only (only when \code{method == "NLR"} or \code{"All"}). Pcrit is defined as the PO2 at which the slope of the best fitting function equals \code{NLR_m} (after the MO2 data are normalized to the 90\% quantile). Default is 0.065.
+#' @param MR applies to the \code{alpha} and \code{LLO} metrics only (only when \code{method == "Alpha", "LLO"} or \code{"All"}). A numeric value for the metabolic rate at which \code{pcrit_alpha} and \code{pcrit_LLO} should be returned. If not supplied by the user, then the mean MO2 of the "oxyregulating" portion of the curve is applied for \code{pcrit_alpha} and \code{NA} is returned for \code{pcrit_LLO}.
+#' @param mo2_threshold applies to the \code{alpha} metric only (only when \code{method == "Alpha"} or \code{"All"}). A single numeric value above which \code{mo2} values are ignored for \code{alpha} Pcrit estimation. Useful to removing obviously erroneous values. Default is \code{Inf}.
 #' @param return_models logical. Should a list of model parameters be returned along with the converged Pcrit values? Default is \code{FALSE}.
 #'
-#' @return If \code{return_models} is \code{FALSE} (default), a named numeric vector of Pcrit values calculated using the \code{Alpha}, \code{Breakpoint}, \code{LLO}, \code{NLR}, and \code{Sub_PI} metrics. If \code{return_models} is \code{TRUE}, then a list of converged Pcrit values, along with breakpoint function parameters, the \code{MR} value used for calculating Pcrit-alpha, a data frame of the "oxyregulating" portion of the curve, and NLR parameters are returned.
+#' @return If \code{return_models} is \code{FALSE} (default), a numeric Pcrit value is returned based on \code{method}. If \code{method == "All"}, a named numeric vector of Pcrit values calculated using the \code{Alpha}, \code{Breakpoint}, \code{LLO}, \code{NLR}, and \code{Sub_PI} metrics is returned. If \code{return_models} is \code{TRUE}, then a list of converged Pcrit values, along with breakpoint function parameters, the \code{MR} value used for calculating Pcrit-alpha, a data frame of the "oxyregulating" portion of the curve, and NLR parameters are returned.
 #' 
 #' @author Matthew A. Birk, \email{matthewabirk@@gmail.com}
 #' @references 
@@ -176,15 +180,35 @@ pcrit_internal = function(po2, mo2, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_
 #' @seealso \code{\link{plot_pcrit}}, \code{\link{calc_MO2}}, \code{\link{conv_o2}}, \code{\link{calc_alpha}}
 #' 
 #' @examples
-#' mo2_data <- read.csv(system.file('extdata', 'mo2_v_po2.csv', package = 'respirometry'))
-#' calc_pcrit(po2 = mo2_data$po2, mo2 = mo2_data$mo2)
+#' raw_data <- system.file('extdata/pcrit_run/', package = 'respirometry')
+#' o2_data <- import_pyroscience_workbench(folder = raw_data)
+#' mo2_data <- calc_MO2(duration = o2_data$DURATION, o2 = o2_data$CH_1_O2, bin_width = 10, vol = 3)
+#' calc_pcrit(mo2_data = mo2_data)
+#' calc_pcrit(po2 = mo2_data$O2_MEAN, mo2 = mo2_data$MO2, method = 'All', MR = 100)
 #' @encoding UTF-8
 #' @export
 #' @importFrom stats AIC
 
-calc_pcrit = function(po2, mo2, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_m = 0.065, MR = NULL, mo2_threshold = Inf, return_models = FALSE){
-	l = pcrit_internal(po2, mo2, avg_top_n, level, iqr, NLR_m, MR = MR, mo2_threshold = mo2_threshold)
-	tmp = c(Alpha = l$pcrit_alpha, Breakpoint = l$breakpoint, LLO = l$pcrit_LLO, NLR = ifelse(length(l$best_mod) > 0, l$nlr_pcrits[[l$best_mod]], NA), Sub_PI = l$sub_PI)
+calc_pcrit = function(po2, mo2, mo2_data, method = 'Breakpoint', avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_m = 0.065, MR = NULL, mo2_threshold = Inf, return_models = FALSE){
+	
+	if(methods::hasArg(mo2_data)) {
+		if('mo2_data' %in% names(attributes(mo2_data)) & missing(po2) & missing(mo2)) {
+			po2 = mo2_data$O2_MEAN
+			mo2 = mo2_data$MO2
+		}
+	}
+	
+	l = pcrit_internal(po2, mo2, method, avg_top_n, level, iqr, NLR_m, MR = MR, mo2_threshold = mo2_threshold)
+	
+	if(method == 'All') tmp = c(Alpha = l$pcrit_alpha, Breakpoint = l$breakpoint, LLO = l$pcrit_LLO, NLR = ifelse(length(l$best_mod) > 0, l$nlr_pcrits[[l$best_mod]], NA), Sub_PI = l$sub_PI)
+	if(method == 'Alpha') tmp = l$pcrit_alpha
+	if(method == 'Breakpoint') tmp = l$breakpoint
+	if(method == 'LLO') tmp = l$pcrit_LLO
+	if(method == 'NLR') tmp = ifelse(length(l$best_mod) > 0, l$nlr_pcrits[[l$best_mod]], NA)
+	if(method == 'Sub_PI') tmp = l$sub_PI
+			
+			
+	
 	if(return_models){
 		breakpoint_params = c(stats::coef(l$model)[1:3], tmp['Breakpoint'])
 		breakpoint_params[3] = breakpoint_params[3] + breakpoint_params[2]
@@ -216,19 +240,15 @@ calc_pcrit = function(po2, mo2, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_m = 
 #' @param showNLRs logical. Should all the NLR functions be plotted in a second plot? If \code{FALSE} then only the best fit NLR function will be plotted.
 #' @param ... arguments to be passed to \code{\link[segmented]{plot.segmented}}.
 #'
-#' @return A base graphic plot is created. The alpha, breakpoint, LLO, NLR, and sub-PI Pcrit values are shown in the title and on the plot by inverted triangles. 
+#' @return A plot is created showing the relationship between PO2 and MO2. Based on the \code{method} used, the alpha, breakpoint, LLO, NLR, and/or sub-PI Pcrit values are shown in the title and on the plot by inverted triangles.
 #' 
-#' The broken-stick regression is shown by black lines. 
+#' For breakpoint and sub-PI methods, the broken-stick regression is shown by black lines. The gray bands represent the confidence interval (defaults to 95\% but will change with \code{level}). 
 #' 
-#' The dashed red curves signify the prediction interval used for the sub-PI Pcrit metric. 
+#' For the sub-PI method, the dashed red curves signify the prediction interval used. Black circles represent oxyregulating observations used in the generation of the prediction interval, while grey circles represent both the oxyconforming observations and those observations outside the IQR threshold (defined by \code{iqr}). 
 #' 
-#' Black circles represent oxyregulating observations used in the generation of the prediction interval, while transparent circles represent both the oxyconforming observations and those observations outside the IQR threshold (defined by \code{iqr}). 
+#' For the NLR method, the green curve represents the best fitting NLR function and the green inverted triangle represents the NLR Pcrit (modified by \code{NLR_m}) 
 #' 
-#' The gray bands represent the confidence interval (defaults to 95\% but will change with \code{level}). 
-#' 
-#' The green curve represents the best fitting NLR function and the green inverted triangle represents the NLR Pcrit (modified by \code{NLR_m}) 
-#' 
-#' The blue line represents alpha, which was fit based on the blue circle observation(s).
+#' For the Alpha method, the blue line represents alpha, which was fit based on the blue circle observation(s). If \code{MR} is not defined by the user, then the black points are those that were averaged to choose \code{MR}. These are the "oxyregulating" observations based on the breakpoint method.
 #' 
 #' If \code{showNLRs = TRUE}, then a second plot is generated which shows all the NLR functions that converged. Vertical lines represent the Pcrit values corresponding to each curve.
 #' 
@@ -246,11 +266,13 @@ calc_pcrit = function(po2, mo2, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_m = 
 #' @seealso \code{\link{calc_pcrit}}, \code{\link{calc_alpha}}
 #' 
 #' @examples
-#' mo2_data <- read.csv(system.file('extdata', 'mo2_v_po2.csv', package = 'respirometry'))
-#' plot_pcrit(po2 = mo2_data$po2, mo2 = mo2_data$mo2, avg_top_n = 3, MR = 2.2)
+#' raw_data <- system.file('extdata/pcrit_run/', package = 'respirometry')
+#' o2_data <- import_pyroscience_workbench(folder = raw_data)
+#' mo2_data <- calc_MO2(duration = o2_data$DURATION, o2 = o2_data$CH_1_O2, bin_width = 10, vol = 3)
+#' plot_pcrit(mo2_data = mo2_data)
 #' 
 #' par(mfrow = c(2, 1))
-#' plot_pcrit(po2 = mo2_data$po2, mo2 = mo2_data$mo2, showNLRs = TRUE)
+#' plot_pcrit(po2 = mo2_data$O2_MEAN, mo2 = mo2_data$MO2, method = 'All', MR = 100, showNLRs = TRUE)
 #'
 #' @encoding UTF-8
 #' @inherit calc_pcrit details references
@@ -259,9 +281,18 @@ calc_pcrit = function(po2, mo2, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_m = 
 
 
 
-plot_pcrit = function(po2, mo2, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_m = 0.065, MR = NULL, mo2_threshold = Inf, showNLRs = FALSE, ...){
+plot_pcrit = function(po2, mo2, mo2_data, method = 'Breakpoint', avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_m = 0.065, MR = NULL, mo2_threshold = Inf, showNLRs = FALSE, ...){
+	if(!(method %in% c('Alpha', 'Breakpoint', 'LLO', 'NLR', 'Sub_PI', 'All'))) stop("Over the years, many different methods of analysis have been proposed to quantify Pcrit. You must specify \"method\" as one of the following: Alpha, Breakpoint, LLO, NLR, Sub_PI, All. If in doubt, try \"All\"")
 	tryCatch({
-		l = pcrit_internal(po2, mo2, avg_top_n, level, iqr, NLR_m, MR = MR, mo2_threshold = mo2_threshold)
+		
+		if(methods::hasArg(mo2_data)) {
+			if('mo2_data' %in% names(attributes(mo2_data)) & missing(po2) & missing(mo2)) {
+				po2 = mo2_data$O2_MEAN
+				mo2 = mo2_data$MO2
+			}
+		}
+		
+		l = pcrit_internal(po2, mo2, method, avg_top_n, level, iqr, NLR_m, MR = MR, mo2_threshold = mo2_threshold)
 		inter1 = level
 		title_values = list(alpha_MR = round(ifelse(is.null(MR), l$MR_mean_reg, l$MR), 2),
 												alpha = round(l$pcrit_alpha, 3),
@@ -270,39 +301,58 @@ plot_pcrit = function(po2, mo2, avg_top_n = 1, level = 0.95, iqr = 1.5, NLR_m = 
 												LLO = round(l$pcrit_LLO, 3),
 												NLR = round(ifelse(length(l$best_mod) > 0, l$nlr_pcrits[[l$best_mod]], NA), 3),
 												subPI = round(l$sub_PI, 3))
-		plot_pcrit_internal = function(l, level = inter1, shade = TRUE, ...){
-			mar = graphics::par()$mar
-			mar[3] = 6.1
-			graphics::par(mar = mar)
-			graphics::plot(l$model, res = TRUE, shade = shade, rug = FALSE, conf.level = level, ...)
-			graphics::title(main = paste0('Alpha @ MR of ', title_values$alpha_MR,' = ', title_values$alpha), col.main = 'blue', line = 5)
-			graphics::title(main = paste0('Breakpoint = ', title_values$breakpoint), col.main = 'black', line = 4)
-			graphics::title(main = paste0('LLO @ MR of ', title_values$LLO_MR,' = ', title_values$LLO), col.main = 'purple', line = 3)
-			graphics::title(main = paste0('NLR (', l$best_mod, ') = ', title_values$NLR), col.main = 'green', line = 2)
-			graphics::title(main = paste0('Sub-PI = ', title_values$subPI), col.main = 'red', line = 1)
+		mar = graphics::par()$mar
+		mar[3] = ifelse(method == 'All', 6.1, 4.1)
+		graphics::par(mar = mar)
+		graphics::plot(po2, mo2, pch = 21, col = 'black', bg = 'grey', ...)
+		
+		if(method %in% c('Alpha', 'All')){
+			graphics::title(main = paste0('Alpha @ MR of ', title_values$alpha_MR,' = ', title_values$alpha), col.main = 'blue', line = ifelse(method == 'All', 5, 1))
+			if(is.null(MR)) graphics::points(l$reg_data$po2, l$reg_data$mo2, pch = 16, ...)
+			graphics::abline(a = 0, b = l$alpha, lty = 3, col = 'blue')
+			graphics::points(x = l$pcrit_alpha, y = l$pcrit_alpha * l$alpha, bg = 'blue', col = 'blue', pch = 25)
+			for(i in l$alpha_obs) graphics::points(x = i['po2'], y = i['mo2'], col = 'blue', pch = 16)
 		}
-		plot_pcrit_internal(l, ...)
-		graphics::points(l$reg_data$po2, l$reg_data$mo2, pch = 16, ...)
-		graphics::points(x = l$breakpoint, y = stats::coef(l$model)[1] + stats::coef(l$model)[2] * l$breakpoint, bg = 'black', pch = 25)
-		graphics::lines(l$po2_range, l$pi_ll, lty = 2, col = 'red', ...)
-		graphics::lines(l$po2_range, l$pi_ul, lty = 2, col = 'red', ...)
-		graphics::points(x = l$sub_PI, y = l$conform[utils::tail(which(l$conform < l$pi_ll), 1)], bg = 'red', col = 'red', pch = 25, ...)
-		graphics::abline(a = 0, b = l$alpha, lty = 3, col = 'blue')
-		graphics::points(x = l$pcrit_alpha, y = l$pcrit_alpha * l$alpha, bg = 'blue', col = 'blue', pch = 25)
-		graphics::points(x = l$pcrit_LLO, y = l$MR, bg = 'purple', col = 'purple', pch = 25)
-		for(i in l$alpha_obs) graphics::points(x = i['po2'], y = i['mo2'], col = 'blue', pch = 16)
-		if(length(l$best_mod) > 0) graphics::lines(po2, stats::predict(l$nlr_mods[[l$best_mod]], newdata = list(po2 = po2)) * l$nlr_normalize_factor, col = 'green', ...)
-		if(length(l$best_mod) > 0) graphics::points(x = l$nlr_pcrits[[l$best_mod]], y = stats::predict(l$nlr_mods[[l$best_mod]], newdata = data.frame(po2 = l$nlr_pcrits[[l$best_mod]])) * l$nlr_normalize_factor, bg = 'green', col = 'green', pch = 25, ...)
-		if(showNLRs){
-			graphics::plot(po2, mo2, main = paste(sum(!is.na(l$nlr_mods)), 'of', length(l$nlr_mods), 'NLR models fit.'))
-			sapply(names(l$nlr_pcrits), function(i){
-				if(any(!is.na(l$nlr_mods[[i]]))) graphics::lines(po2, stats::predict(l$nlr_mods[[i]], newdata = list(po2 = po2)) * l$nlr_normalize_factor, col = which(names(l$nlr_pcrits) == i))
-			})
-			if(length(l$best_mod) > 0) graphics::lines(po2, stats::predict(l$nlr_mods[[l$best_mod]], newdata = list(po2 = po2)) * l$nlr_normalize_factor, lwd = 2, ...)
-			sapply(l$nlr_pcrits, function(i) graphics::abline(v = i, col = which(l$nlr_pcrits == i)))
+		
+		if(method %in% c('Breakpoint', 'All')){
+			graphics::title(main = paste0('Breakpoint = ', title_values$breakpoint), col.main = 'black', line = ifelse(method == 'All', 4, 1))
+		}
+		
+		if(method %in% c('LLO', 'All')){
+			graphics::title(main = paste0('LLO @ MR of ', title_values$LLO_MR,' = ', title_values$LLO), col.main = 'purple', line = ifelse(method == 'All', 3, 1))
+			graphics::points(x = l$pcrit_LLO, y = l$MR, bg = 'purple', col = 'purple', pch = 25)
+		}
+		
+		
+		if(method %in% c('Sub_PI', 'All')){
+			graphics::title(main = paste0('Sub-PI = ', title_values$subPI), col.main = 'red', line = 1)
+			graphics::points(l$reg_data$po2, l$reg_data$mo2, pch = 16, ...)
+			graphics::lines(l$po2_range, l$pi_ll, lty = 2, col = 'red', ...)
+			graphics::lines(l$po2_range, l$pi_ul, lty = 2, col = 'red', ...)
+			graphics::points(x = l$sub_PI, y = l$conform[utils::tail(which(l$conform < l$pi_ll), 1)], bg = 'red', col = 'red', pch = 25, ...)
+		}
+		
+		if(method %in% c('Breakpoint', 'Sub_PI', 'All')){
+			graphics::plot(l$model, res = FALSE, shade = TRUE, rug = FALSE, conf.level = level, add = TRUE, ...)
+			graphics::points(x = l$breakpoint, y = stats::coef(l$model)[1] + stats::coef(l$model)[2] * l$breakpoint, bg = 'black', pch = 25)
+		}
+		
+		
+		if(method %in% c('NLR', 'All')){
+			graphics::title(main = paste0('NLR (', l$best_mod, ') = ', title_values$NLR), col.main = 'green', line = ifelse(method == 'All', 2, 1))
+			if(length(l$best_mod) > 0) graphics::lines(po2, stats::predict(l$nlr_mods[[l$best_mod]], newdata = list(po2 = po2)) * l$nlr_normalize_factor, col = 'green', ...)
+			if(length(l$best_mod) > 0) graphics::points(x = l$nlr_pcrits[[l$best_mod]], y = stats::predict(l$nlr_mods[[l$best_mod]], newdata = data.frame(po2 = l$nlr_pcrits[[l$best_mod]])) * l$nlr_normalize_factor, bg = 'green', col = 'green', pch = 25, ...)
+			if(showNLRs){
+				graphics::plot(po2, mo2, main = paste(sum(!is.na(l$nlr_mods)), 'of', length(l$nlr_mods), 'NLR models fit.'))
+				sapply(names(l$nlr_pcrits), function(i){
+					if(any(!is.na(l$nlr_mods[[i]]))) graphics::lines(po2, stats::predict(l$nlr_mods[[i]], newdata = list(po2 = po2)) * l$nlr_normalize_factor, col = which(names(l$nlr_pcrits) == i))
+				})
+				if(length(l$best_mod) > 0) graphics::lines(po2, stats::predict(l$nlr_mods[[l$best_mod]], newdata = list(po2 = po2)) * l$nlr_normalize_factor, lwd = 2, ...)
+				sapply(l$nlr_pcrits, function(i) graphics::abline(v = i, col = which(l$nlr_pcrits == i)))
+			}
 		}
 	}, error = function(e){
-		graphics::plot(po2, mo2, main = 'Could not calculate a Pcrit. Plotting just the values...')
+		graphics::plot(po2, mo2, main = 'Could not calculate a Pcrit. Plotting just the values...', ...)
 	})
 	
 }

@@ -1,6 +1,6 @@
 #' @title Mass-correct metabolic rate
 #' 
-#' @description For most organisms, metabolic rate does not scale linearly, but rather according to a power function. This function estimates MO2 or size of an individual organism given the MO2 and size of another individual of a different size. To mass-correct your MO2 data, plug in your desired mass in \code{mass_2} and the output from \code{\link{calc_b}} to the \code{b} parameter.
+#' @description For most organisms, metabolic rate does not scale linearly, but rather according to a power curve. This function estimates MO2 or size of an individual organism given the MO2 and size of another individual of a different size. To mass-correct your MO2 data, plug in your desired mass in \code{mass_2} and the output from \code{\link{calc_b}} to the \code{b} parameter.
 #' 
 #' @details
 #' \deqn{(MO2 = b0 * M^b)}
@@ -81,3 +81,7 @@ scale_MO2 = function(mass_1, MO2_1, mass_2, MO2_2, b = 0.75){
 		return(MO2_2)
 	}
 }
+
+#' @rdname scale_MO2
+#' @export
+scale_mo2 = scale_MO2

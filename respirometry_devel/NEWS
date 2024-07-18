@@ -1,5 +1,13 @@
 -------------------------------------------------
-version x.y.z, yyyy-mm-dd
+version 2.0.0, 2024-07-18
+- calc_pcrit() and plot_pcrit():	updated so that the classical "breakpoint" method of analysis is used by default. If other methods, or all methods are desired, they should be specified with the "method" parameter.
+- calc_pcrit() and plot_pcrit():	for convenience, the output of calc_MO2() can now be inputted directly into these Pcrit functions with the mo2_data parameter, instead of adding po2 and mo2 parameters separately.
+- closed():		clarified the usefulness of this function in documentation. Useful for estimating Pcrit trial length. Not ideal for analyzing collected data.
+- calc_MO2():		corrected the "binning" behavior to not reuse data in multiple bins when a dataframe was provided for bin_width.
+- make_bins():		(hopefully) clarified documentation and how to use make_bins(). Reversed order of rows from previous versions.
+- conv_o2():	added support for nmol_per_ml
+- For your convenience, added aliases so that calc_mo2() will work as calc_MO2() (for when you forget to capitalize the MO2 part. Same for Q10(), max_MO2(), and scale_MO2(). calc_q10() is now an alias for Q10().
+- conv_o2():	No longer breaks when sal=NULL, but instead converts sal to 35psu (the default) and sends out a warning.
 -------------------------------------------------
 version 1.5.0, 2024-02-09
 - import_pyroscience_workbench():	new function: Import data from Pyroscience Workbench.
