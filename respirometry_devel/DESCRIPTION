@@ -1,10 +1,14 @@
 Package: respirometry
 Type: Package
 Title: Tools for Conducting and Analyzing Respirometry Experiments
-Version: x.y.z
+Version: x.y.z.
 Date: yyyy-mm-dd
-Author: Matthew A. Birk
-Maintainer: Matthew A. Birk <matthewabirk@gmail.com>
+Authors@R:
+	person(given = c("Matthew", "A."),
+		family = "Birk",
+		role = c("aut", "cre"),
+		email = "matthewabirk@gmail.com", 
+		comment = c(ORCID = "0000-0003-0407-4077"))
 Description: Provides tools to enable the researcher to more precisely conduct
     respirometry experiments. Strong emphasis is on aquatic respirometry. Tools
     focus on helping the researcher setup and conduct experiments. Functions for
