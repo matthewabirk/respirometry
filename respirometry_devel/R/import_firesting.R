@@ -64,12 +64,18 @@ import_firesting = function(file, o2_unit = 'percent_a.s.', date = '%m/%d/%Y %X'
 	raw = strsplit(raw, split = '\r+\n')[[1]]
 	raw = raw[sapply(raw, nchar) > 0] # remove blank rows
 	f = strsplit(raw, split = '\t', fixed = TRUE)
-	channels_calib = suppressWarnings(stats::na.omit(as.numeric(gsub('Ch ', '', sapply(f[grep('Settings:', f[1:50]) + 1:4], '[', 1)))))
+	channel_metadata = f[grep('Settings:', f[1:50]) + 1:4]
+	channels_calib = suppressWarnings(stats::na.omit(as.numeric(gsub('Ch ', '', sapply(channel_metadata, '[', 1)))))
 	n_channels_calib = length(channels_calib)
+	
 	sals = as.numeric(sapply(f[grep('Settings:', f[1:50]) + 1:n_channels_calib], '[', grep('Salinity', f[[grep('Settings:', f[1:50])]])))
 	if(is.null(overwrite_sal)) overwrite_sal = sals
 	if(length(overwrite_sal) == 1) overwrite_sal = rep(overwrite_sal, length(sals))
 	orig_o2_units = sapply(f[grep('Settings:', f[1:50]) + 1:n_channels_calib], '[', 3)
+	
+	# channels_off = which(orig_o2_units == 'raw value')
+	# channels_calib = channels_calib[-channels_off]
+	
 	software_version = paste(f[[2]], collapse = ' ')
 	if(grepl('Firesting Logger', software_version)){
 		atm_pres = as.numeric(sapply(f[grep('Settings:', f[1:50]) + 1:n_channels_calib], '[', grep('Press.', f[[grep('Settings:', f[1:50])]])))
@@ -113,9 +119,15 @@ import_firesting = function(file, o2_unit = 'percent_a.s.', date = '%m/%d/%Y %X'
 	)
 	f[f == '---'] = NA
 	f[, -which(colnames(f) %in% c('DATE', 'TIME', 'COMMENT'))] = sapply((1:ncol(f))[-which(colnames(f) %in% c('DATE', 'TIME', 'COMMENT'))], function(i) as.numeric(f[, i])) # all except date, time, and comment
+	
+
+# Convert O2 units --------------------------------------------------------
+
+	
+	
 	f[, o2_cols] = sapply(o2_cols, function(i){
-		if(orig_o2_units[which(i == o2_cols)] %in% c('raw', 'dphi')){
-			warning('The O2 values in channel ', gsub('CH_(\\d)_O2', '\\1', colnames(f)[i]), ' are expressed in either "raw" or "dphi" and cannot be converted to ', o2_unit)
+		if(orig_o2_units[which(i == o2_cols)] %in% c('raw', 'dphi', 'raw value')){
+			warning('The O2 values in channel ', gsub('CH_(\\d)_O2', '\\1', colnames(f)[i]), ' are expressed in either "raw" or "dphi" and cannot be converted to ', o2_unit, call. = FALSE)
 			return(f[, i])
 		}
 		if(grepl('Firesting Logger', software_version)){
@@ -129,6 +141,11 @@ import_firesting = function(file, o2_unit = 'percent_a.s.', date = '%m/%d/%Y %X'
 			return(inter1)
 		}
 	})
+	
+
+# Get timestamps ----------------------------------------------------------
+
+	
 	if(grepl('Firesting Logger', software_version)) f$DATE = date_start
 	f$TIME = strptime(paste(f$DATE, f$TIME), format = date)
 	f$DATE = NULL
@@ -142,8 +159,7 @@ import_firesting = function(file, o2_unit = 'percent_a.s.', date = '%m/%d/%Y %X'
 	}
 	f$DURATION = f$DURATION / 60 # convert from secs to mins
 	if(grepl('Firesting Logger', software_version)) f = f[, colnames(f) != '']
-	
-	#o2_cols = grep('^CH_\\d_O2$', colnames(f))
+
 	for(i in rev(1:length(overwrite_sal))){
 		sal_list = list(overwrite_sal[i])
 		names(sal_list) = paste('CH', i, 'SAL', sep = '_')
@@ -156,6 +172,7 @@ import_firesting = function(file, o2_unit = 'percent_a.s.', date = '%m/%d/%Y %X'
 	last_sal_col = max(grep('CH_\\d_SAL', colnames(f)))
 	f = f[, c(setdiff(1:last_sal_col, comment_col), comment_col, (last_sal_col + 1):ncol(f))]
 	
+	o2_cols = grep('^CH_\\d_O2$', colnames(f)) # redefine O2 columns since DATE was deleted and comment column was moved
 	
 	if(any(is.na(f$TIME))) stop(paste('The time record does not match', date, 'on at least some of the lines between', range(which(is.na(f$TIME)))[1], 'and', range(which(is.na(f$TIME)))[2]), call. = FALSE)
 	
