@@ -58,7 +58,7 @@ calc_mo2(
 
 \item{pH}{(optional). Numeric vector of pH observations.}
 
-\item{good_data}{logical vector of whether O2 observations are "good" measurements and should be included in analysis. Linear regressions will not be fit over bins that include "bad" data. Bins will be split at bad data points. Default is that all observations are \code{TRUE}.}
+\item{good_data}{logical vector of whether O2 observations are "good" measurements and should be included in analysis. For intermittent respirometry, flush periods should be labelled as \code{FALSE}. Linear regressions will not be fit over bins that include "bad" data. Bins will be split at bad data points. Default is that all observations are \code{TRUE}.}
 }
 \value{
 A data frame is returned:

@@ -15,7 +15,7 @@
 #' @param atm_pres atmospheric pressure (mbar). Default is 1013.25 mbar.
 #' @param time (optional). Numeric vector of timestamp observations.
 #' @param pH (optional). Numeric vector of pH observations.
-#' @param good_data logical vector of whether O2 observations are "good" measurements and should be included in analysis. Linear regressions will not be fit over bins that include "bad" data. Bins will be split at bad data points. Default is that all observations are \code{TRUE}.
+#' @param good_data logical vector of whether O2 observations are "good" measurements and should be included in analysis. For intermittent respirometry, flush periods should be labelled as \code{FALSE}. Linear regressions will not be fit over bins that include "bad" data. Bins will be split at bad data points. Default is that all observations are \code{TRUE}.
 #'
 #' @return A data frame is returned:
 #' \describe{
@@ -87,7 +87,7 @@ calc_MO2 = function(duration, o2, o2_unit = 'percent_a.s.', bin_width, vol, temp
 	
 	if(any(bin_width != 0)){
 		if(is.numeric(bin_width)){
-			data$bin = floor(data$duration / bin_width)
+			data$bin = floor((data$duration - min(data$duration, na.rm = TRUE)) / bin_width)
 			data$bin = unlist(by(data, data$bin, function(i){ # split bins by bad data
 				breaks = rle(i$good)[['lengths']]
 				paste0(i$bin, rep(letters[1:length(breaks)], breaks))

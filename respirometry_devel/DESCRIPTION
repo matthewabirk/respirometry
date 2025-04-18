@@ -1,7 +1,7 @@
 Package: respirometry
 Type: Package
 Title: Tools for Conducting and Analyzing Respirometry Experiments
-Version: x.y.z.
+Version: x.y.z
 Date: yyyy-mm-dd
 Authors@R:
 	person(given = c("Matthew", "A."),

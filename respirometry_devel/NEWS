@@ -1,5 +1,10 @@
+
 -------------------------------------------------
 version x.y.z, yyyy-mm-dd
+-------------------------------------------------
+version 2.0.2, 2025-04-17
+- calc_MO2():		when a single numeric value is entered as the bin width, the binning algorithm now starts the first bin with the first observation regardless of the numeric value of the duration input (e.g. if the data start at minute 23.17 in the O2 sensor output file and the bin widths are 10 minutes, then the first bin will be from minute mark 23.17 to 33.16).
+- import_witrox():	fixed a bug when importing files with a non-English time locale.
 -------------------------------------------------
 version 2.0.1, 2024-11-22
 - import_firesting():		corrected a bug when a channel was turned off but still displayed in text file.

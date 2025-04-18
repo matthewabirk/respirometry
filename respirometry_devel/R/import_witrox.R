@@ -81,7 +81,12 @@ import_witrox = function(file, o2_unit = 'percent_a.s.', date = '%m/%d/%Y %I:%M:
 		inter1 = inter1 / conv_o2(to = o2_unit, temp = f[, i - 1], sal = sals[which(i == o2_cols)], atm_pres = f$ATM_PRES) * conv_o2(to = o2_unit, temp = f[, i - 1], sal = overwrite_sal[which(i == o2_cols)], atm_pres = f$ATM_PRES)
 		inter1
 	})
+	
+	lct <- Sys.getlocale("LC_TIME")
+	Sys.setlocale("LC_TIME", "C")
 	f$TIME = strptime(f$TIME, format = date)
+	Sys.setlocale("LC_TIME", lct)
+	
 	f$DURATION = as.numeric(difftime(time1 = f$TIME, time2 = f[1, 'TIME'], units = 'mins'))
 	for(i in 1:length(overwrite_sal)){
 		sal_list = list(overwrite_sal[i])
